@@ -2,16 +2,7 @@
   <title>Title</title>
 </head>
 <body>
-<nav>
-  <ul>
-    <li><a href="#" id="latest-posts">最新投稿</a></li>
-    <li><a href="#" id="latest-dates">最新の開催日</a></li>
-    <li><a href="#" id="welcome-parties">新歓</a></li>
-    <li><a href="#" id="indoor">屋内</a></li>
-    <li><a href="#" id="outdoor">屋外</a></li>
-  </ul>
-</nav>
-<form id="myForm">
+<form id="form">
   <label for="username">Username:</label>
   <input type="text" id="username" name="username" value="phoebe"><br><br>
   <label for="title">Title:</label>
@@ -27,140 +18,82 @@
 <ul id="post-list"></ul>
 
 <script type="module">
-function filterPosts(criteria) {
-let filteredPosts = [...data]; // Create a shallow copy of the data array
+const fetchJSON = async (path, req) => {
+  if (req) {
+    return await (await fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(req),
+    })).json();
+  } else {
+    return await (await fetch(path)).json();
+  }
+};
 
-switch (criteria) {
-    case "latest-posts":
-    filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-    break;
-    case "latest-dates":
-    // Sorting logic for latest dates
-    break;
-    case "welcome-parties":
-    // Filtering logic for 新歓
-    break;
-    case "indoor":
-    // Filtering logic for 屋内
-    break;
-    case "outdoor":
-    // Filtering logic for 屋外
-    break;
-    default:
-    break;
-}
-
-updateList(filteredPosts);
-}
-
-// Add event listeners to the navigation buttons
-document.getElementById("latest-posts").addEventListener("click", (e) => {
-e.preventDefault();
-filterPosts("latest-posts");
-});
-
-document.getElementById("latest-dates").addEventListener("click", (e) => {
-e.preventDefault();
-// Add the sorting or filtering criteria
-filterPosts("latest-dates");
-});
-
-document.getElementById("welcome-parties").addEventListener("click", (e) => {
-e.preventDefault();
-// Add the sorting or filtering criteria
-filterPosts("welcome-parties");
-});
-
-document.getElementById("indoor").addEventListener("click", (e) => {
-e.preventDefault();
-// Add the sorting or filtering criteria
-filterPosts("indoor");
-});
-
-document.getElementById("outdoor").addEventListener("click", (e) => {
-e.preventDefault();
-// Add the sorting or filtering criteria
-filterPosts("outdoor");
-});
-
-let data = [];
-
-async function fetchPosts() {
-try {
-    const response = await fetch("/fetch-posts");
-    data = await response.json();
-
-    // リストの更新処理をここで行います。
+const fetchPosts = async () => {
+  try {
+    const data = await fetchJSON("/fetch-posts");
     updateList(data);
-} catch (error) {
-    console.error("Error fetching posts:", error);
-}
-}
+  } catch (error) {
+    console.error(error);
+  }
+};
 
-function updateList(posts) {
-const postList = document.getElementById("post-list");
-// 既存のリストアイテムをクリアします。
-postList.innerHTML = "";
-// 新しいリストアイテムを追加します。
-posts.forEach((post) => {
+const updateList = (posts) => {
+  const postList = document.getElementById("post-list");
+  // 既存のリストアイテムをクリアします。
+  postList.innerHTML = "";
+  // 新しいリストアイテムを追加します。
+  posts.forEach((post) => {
     console.log(post);
     const listItem = document.createElement("li");
     listItem.textContent = `${post.title} by ${post.username} on ${post.date} with ${post.participants} participants`;
     //ボタンを追加
     const button = document.createElement("button");
     button.textContent = "Join";
-    button.addEventListener("click", async function () {
-    // ボタンがクリックされたら、参加者数を更新します。
-    post.participants++;
+    button.addEventListener("click", async () => {
+      // ボタンがクリックされたら、参加者数を更新します。
+      post.participants++;
 
-    await fetch("/add-participants", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json"
-        },
-        body: JSON.stringify(post.id)
-    })
-        .then(response => {
-        console.log("Data submitted successfully"+response);
-        })
-        .catch(error => console.error("Error submitting data:", error));
-
-    // リストの更新処理をここで行います。
-    updateList(data);
+      try {
+        const data = await fetchJSON("/add-participants", post.id);
+        console.log("Data submitted successfully: " + data);
+        // リストの更新処理をここで行います。
+        updateList(posts);
+      } catch (error) {
+        console.error("Error submitting data:", error);
+        post.participants--;
+      }
     });
     postList.appendChild(listItem);
     postList.appendChild(button);
-});
-}
-
-// ページの読み込みが完了したら、fetchPostsを実行します。
-window.addEventListener("load", fetchPosts);
-
-const form = document.getElementById("myForm");
-
-form.addEventListener("submit", function(event) {
-event.preventDefault(); // prevent default form submission
-
-const data = {
-    username: document.getElementById("username").value,
-    title: document.getElementById("title").value,
-    date: document.getElementById("date").value,
-    description: document.getElementById("description").value,
+  });
 };
 
-fetch("/register-post", {
-    method: "POST",
-    headers: {
-    "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-})
-    .then(response => {
-    console.log("Data submitted successfully"+response);
+form.addEventListener("submit", async (event) => {
+  event.preventDefault(); // prevent default form submission
+
+  const data = {
+    username: username.value,
+    title: title.value,
+    date: date.value,
+    description: description.value,
+  };
+
+  try {
+    const response = await fetchJSON("/register-post", data);
+    console.log("Data submitted successfully: " + response);
     form.reset(); // reset form after submission
-    })
-    .catch(error => console.error("Error submitting data:", error));
+
+    fetchPosts(data);
+  } catch (error) {
+    console.error("Error submitting data:", error);
+  }
 });
+
+fetchPosts();
 </script>
 
 </body>
