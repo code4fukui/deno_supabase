@@ -40,7 +40,7 @@ serve(async req => {
   }
 
   if (req.method === "POST" && pathname === "/add-participants") {
-    const requestData = await req.json();
+    const id = await req.json();
     const { data: participants, error: error1 } = await supabase.from("post")
       .select("participants")
       .eq("id", id);
@@ -51,7 +51,7 @@ serve(async req => {
       .update({ participants: newParticipantCount })
       .eq("id", id);
     if (error) return handleError(error);
-    return new Response(JSON.stringify(requestData), { headers: { "content-type": "application/json" } });
+    return new Response(JSON.stringify(id), { headers: { "content-type": "application/json" } });
   }
 
   return serveDir(req, {
