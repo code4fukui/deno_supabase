@@ -6,16 +6,16 @@
 
 ## 準備
 
-1. [Deno](httsp://deno.land/)をインストール
-1. [GitHub](https://github.com/)のアカウントを作成
-1. [Supabase](https://supabase.com/)にGitHubアカウントでログイン
-1. project test1 を作成し、SUPABASE_URL と SUPABASE_KEY を設定
+1. [Deno](https://deno.land/)をインストール
+2. [GitHub](https://github.com/)のアカウントを作成
+3. [Supabase](https://supabase.com/)にGitHubアカウントでログイン
+4. project test1 を作成し、SUPABASE_URL と SUPABASE_KEY を設定
 ```sh
 export SUPABASE_URL=***
 export SUPABASE_KEY=***
 ```
-1. table post を作成し、RLS(Row Level Security)はひとまずdisabledにする
-1. table postに、下記の項目を追加
+5. table post を作成し、RLS(Row Level Security)はひとまずdisabledにする
+6. table postに、下記の項目を追加
 ```
 username :text
 title :text
@@ -23,11 +23,11 @@ date :timestamptz
 description :text
 participants :numeric
 ```
-1. サーバーを起動する
+7. サーバーを起動する
 ```sh
 deno run server.js
 ```
-1. ブラウザで [http://localhost:8000/](http://localhost:8000/) を開く
+8. ブラウザで [http://localhost:8000/](http://localhost:8000/) を開く
 
 ## 使い方
 ### fetch
