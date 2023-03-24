@@ -4,6 +4,7 @@
 - DBからデータを取得する
 - DBにデータを追加する
 - DBのデータを更新する
+（[デモ](https://code4fukui-deno-supabase.deno.dev/)）
 
 ## 準備
 
