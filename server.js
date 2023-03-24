@@ -7,12 +7,11 @@ const url = Deno.env.get("SUPABASE_URL");
 const key = Deno.env.get("SUPABASE_KEY");
 const supabase = createClient(url, key)
 
+const resjson = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json" } });
+
 const handleError = async (error) => {
-  console.log("このエラーは" + JSON.stringify(error, null, 2));
-  return new Response(JSON.stringify({ error: "An error occurred while processing your request" }), {
-    status: 500,
-    headers: { "content-type": "application/json" }
-  });
+  console.log("error", JSON.stringify(error, null, 2));
+  return resjson(error, 500);
 };
 
 serve(async req => {
@@ -22,7 +21,7 @@ serve(async req => {
   if (req.method === "GET" && pathname === "/fetch-posts") {
     const { data, error } = await supabase.from("post").select("*");
     if (error) return handleError(error);
-    return new Response(JSON.stringify(data), { headers: { "content-type": "application/json" } });
+    return resjson(data);
   }
 
   if (req.method === "POST" && pathname === "/register-post") {
@@ -36,7 +35,7 @@ serve(async req => {
     };
     const { error } = await supabase.from("post").insert(postData);
     if (error) return handleError(error);
-    return new Response(JSON.stringify(requestData), { headers: { "content-type": "application/json" } });
+    return resjson(requestData);
   }
 
   if (req.method === "POST" && pathname === "/add-participants") {
@@ -51,7 +50,7 @@ serve(async req => {
       .update({ participants: newParticipantCount })
       .eq("id", id);
     if (error) return handleError(error);
-    return new Response(JSON.stringify(id), { headers: { "content-type": "application/json" } });
+    return resjson(id);
   }
 
   return serveDir(req, {

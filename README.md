@@ -33,11 +33,9 @@ deno run server.js
 ### fetch
 ```js
 if (req.method === "GET" && pathname === "/fetch-posts") {
-  const data = await fetchPosts();
+  const { data, error } = await supabase.from("post").select("*");
   if (error) return handleError(error);
-
-  console.log("成功したかも" + JSON.stringify(data));
-  return new Response(JSON.stringify(data), { headers: { "content-type": "application/json" } });
+  return resjson(data);
 }
 ```
 
@@ -52,28 +50,26 @@ if (req.method === "POST" && pathname === "/register-post") {
     description: requestData.description,
     participants: 0
   };
-
-  const { error } = await registerPost(postData);
+  const { error } = await supabase.from("post").insert(postData);
   if (error) return handleError(error);
-
-  console.log("成功したかも" + requestData.date);
-  return new Response(JSON.stringify(requestData), { headers: { "content-type": "application/json" } });
+  return resjson(requestData);
 }
 ```
 
 ## Update
 ```js
 if (req.method === "POST" && pathname === "/add-participants") {
-  const requestData = await req.json();
-
-  const { participants, error1 } = await getParticipants(requestData);
+  const id = await req.json();
+  const { data: participants, error: error1 } = await supabase.from("post")
+    .select("participants")
+    .eq("id", id);
   if (error1) return handleError(error1);
 
   const newParticipantCount = participants[0].participants + 1;
-  const { error } = await updateParticipants(requestData, newParticipantCount);
+  const { error } = await supabase.from("post")
+    .update({ participants: newParticipantCount })
+    .eq("id", id);
   if (error) return handleError(error);
-
-  console.log("成功したかも" + requestData);
-  return new Response(JSON.stringify(requestData), { headers: { "content-type": "application/json" } });
+  return resjson(id);
 }
 ```
