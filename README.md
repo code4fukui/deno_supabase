@@ -1,10 +1,9 @@
 # DenoでSupabaseを操作するサンプル
 
 ## 概要
-- DBからデータを取得する
+- DBからデータを取得する （[デモ](https://code4fukui-deno-supabase.deno.dev/)）
 - DBにデータを追加する
 - DBのデータを更新する
-（[デモ](https://code4fukui-deno-supabase.deno.dev/)）
 
 ## 準備
 
