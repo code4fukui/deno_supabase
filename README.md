@@ -1,4 +1,4 @@
-# DenoでSupabaseを操作するサンプル
+# DenoでDB(Supabase)を使うWebアプリのサンプル
 
 ## 概要
 - DBからデータを取得する （[デモ](https://code4fukui-deno-supabase.deno.dev/)）
