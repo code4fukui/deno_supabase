@@ -3,6 +3,7 @@
 ## 概要
 - DBからデータを取得する
 - DBにデータを追加する
+- DBのデータを更新する
 
 ## 準備
 
@@ -12,7 +13,7 @@
 4. project test1 を作成
 ![image](https://user-images.githubusercontent.com/1715217/227658661-8e05d64d-d6a6-46e0-b7d6-af9d40243355.png)
 
-5. SUPABASE_URL と SUPABASE_KEY を設定
+5. Project URL　を　SUPABASE_URL に、Project API Keys の public を SUPABASE_KEY に設定
 ![image](https://user-images.githubusercontent.com/1715217/227658705-e6c4c7bb-ad5c-4e6e-a991-8460488a4bb9.png)
 ```sh
 export SUPABASE_URL=***
@@ -34,7 +35,7 @@ participants :numeric
 ```
 ![image](https://user-images.githubusercontent.com/1715217/227658788-23a07a30-a03b-44dc-8ec2-959996330ef3.png)
 
-9. サーバーを起動する
+9. サーバーを起動
 ```sh
 deno run server.js
 ```
