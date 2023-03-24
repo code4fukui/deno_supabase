@@ -39,7 +39,13 @@ participants :numeric
 ```sh
 deno run server.js
 ```
-10. ブラウザで [http://localhost:8000/](http://localhost:8000/) を開く
+10. ブラウザで [http://localhost:8000/](http://localhost:8000/) を開く（ローカル環境動作完了！）
+
+11. [Deno Deploy](https://deno.com/deploy) にGitHubでサインインする
+12. New Project、Select GitHub Repository でこのリポジトリの公開したいブランチを選択
+13. 起動するサーバープログラムとして server.jsを設定
+14. 環境変数(Environment Variables)として、SUPABASE_URLとSUPABASE_KEYを設定し、Link
+15. デプロイされたリンクをブラウザで開く（デプロイ完了！）
 
 ## 使い方
 ### fetch
